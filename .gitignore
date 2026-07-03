@@ -1,0 +1,18 @@
+# Credentials and personal data — never commit these
+.env
+auth.json
+*.tar.gz
+state.db
+state.db-wal
+state.db-shm
+
+# Live profile and on-stick engine
+data/
+.uv-tools/
+.uv-cache/
+uv
+uv.exe
+
+# OS noise
+.DS_Store
+Thumbs.db

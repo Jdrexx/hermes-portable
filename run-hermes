@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Resolve the script directory portably (readlink -f is missing on older macOS)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -L "$SOURCE" ]; do
+    DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+
+export HERMES_HOME="$SCRIPT_DIR/data"
+export UV_TOOL_DIR="$SCRIPT_DIR/.uv-tools"
+export UV_TOOL_BIN_DIR="$SCRIPT_DIR/.uv-tools/bin"
+export UV_CACHE_DIR="$SCRIPT_DIR/.uv-cache"
+export PATH="$UV_TOOL_BIN_DIR:$PATH"
+
+# If Hermes isn't installed on the stick yet, kick off bootstrap
+if [ ! -x "$UV_TOOL_BIN_DIR/hermes" ]; then
+    echo "Hermes not found on the stick — running bootstrap first..."
+    "$SCRIPT_DIR/bootstrap.sh"
+    echo ""
+fi
+
+exec "$UV_TOOL_BIN_DIR/hermes" "$@"
