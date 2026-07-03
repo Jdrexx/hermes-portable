@@ -1,5 +1,9 @@
 # Portable Hermes
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20WSL2-blue)
+![Shell](https://img.shields.io/badge/shell-bash-121011?logo=gnu-bash&logoColor=white)
+
 Run a fully self-contained [Hermes Agent](https://github.com/NousResearch/hermes-agent) from a USB stick.
 Your exact profile, skills, memories, sessions, and configuration —
 ready to plug into any Linux or macOS machine, without installing
@@ -28,6 +32,26 @@ cp .env.example .env        # then fill in your API keys
 `bootstrap.sh` downloads the right `uv` for the current OS/architecture,
 installs the Hermes engine *onto the stick* (not the host), and unpacks
 your profile if one is present.
+
+### Example session
+
+```console
+$ ./bootstrap.sh
+============================================
+  Portable Hermes — First Run Bootstrap
+============================================
+[1/5] Detected: Linux / x86_64
+[2/5] Checking Python...       Found python3 3.11
+[3/5] Checking uv...           Using bundled uv 0.11.26
+[4/5] Installing Hermes Agent via uv...
+       Installed 3 executables: hermes, hermes-acp, hermes-agent
+[5/5] Seeding profile and configuration...
+       Extracted profile to data/
+  Bootstrap complete!  Run ./run-hermes to start.
+
+$ ./run-hermes
+Hermes ready. $HERMES_HOME=/media/usb/data
+```
 
 ## Bring your own profile
 
@@ -61,15 +85,32 @@ on the stick (`.uv-tools/`, `.uv-cache/`).
 - Python 3.10+
 - Internet on the first bootstrap per machine (to download uv + hermes-agent)
 
+## Encrypt the stick (recommended)
+
+The stick carries every API key, OAuth token, and your full session
+history — so encrypt it. This repo ships a [gocryptfs](https://github.com/rfjakob/gocryptfs)
+workflow that keeps everything encrypted at rest and mounts a decrypted
+view only while you're using it (nothing plaintext touches the host disk):
+
+```bash
+bash encrypt-stick.sh          # one-time: create the vault, set a passphrase
+bash open-hermes-vault.sh      # unlock  → ~/hermes-portable.open
+cd ~/hermes-portable.open && ./run-hermes
+bash close-hermes-vault.sh     # lock before unplugging
+```
+
+Full walkthrough, platform notes, and gotchas: **[docs/ENCRYPTION.md](docs/ENCRYPTION.md)**.
+
 ## Security notes
 
 - `.env`, `auth.json`, and `state.db` contain API keys, OAuth tokens,
   and your full conversation history. They belong on the physical
   stick only. **Never commit them, and wipe them before handing the
   stick to anyone else.**
-- Consider full-disk encryption for the stick (LUKS on Linux,
-  encrypted APFS/exFAT via Disk Utility on macOS) — if you lose it,
-  you lose every key on it.
+- **Encrypt the stick** (see above). If you'd rather encrypt the whole
+  device, LUKS (Linux) or VeraCrypt (cross-platform) also work.
+- Never store the vault passphrase next to the vault, and never commit
+  them together — the `.gitignore` blocks both by default.
 - You can re-auth on any machine via `hermes auth` or by copying fresh
   credentials into `data/`.
 
@@ -92,12 +133,22 @@ cp ~/.hermes/state.db /path/to/usb/
 usb/
 ├── bootstrap.sh          # One-time setup per machine   (this repo)
 ├── run-hermes            # Daily launcher               (this repo)
+├── encrypt-stick.sh      # One-time: create the vault   (this repo)
+├── open-hermes-vault.sh  # Unlock the encrypted vault   (this repo)
+├── close-hermes-vault.sh # Lock the encrypted vault     (this repo)
 ├── .env.example          # Template for your API keys   (this repo)
+├── docs/ENCRYPTION.md    # Encryption walkthrough       (this repo)
+├── gocryptfs             # Encryption binary            (you add)
 ├── .env                  # Your API keys                (you add)
 ├── auth.json             # OAuth tokens                 (you add)
 ├── hermes-default.tar.gz # Your exported profile        (you add)
 ├── state.db(-wal/-shm)   # Session history              (you add)
+├── hermes-portable.vault/# Encrypted payload — created by encrypt-stick.sh
 ├── uv                    # Downloaded by bootstrap
 ├── data/                 # Your live $HERMES_HOME — created by bootstrap
 └── .uv-tools/ .uv-cache/ # Engine + cache, on-stick only
 ```
+
+## License
+
+[MIT](LICENSE) © Jon Dreksler

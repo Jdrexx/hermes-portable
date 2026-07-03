@@ -1,4 +1,4 @@
-# Credentials and personal data — never commit these
+# ─── Credentials and personal data — NEVER commit these ───────────────
 .env
 auth.json
 *.tar.gz
@@ -6,13 +6,23 @@ state.db
 state.db-wal
 state.db-shm
 
-# Live profile and on-stick engine
+# Encrypted vault, its mountpoint, and the passphrase — keep these on the
+# physical stick only. Committing the vault + passphrase together would make
+# the encryption worthless.
+hermes-portable.vault/
+hermes-portable.open/
+hermes-vault-passphrase.txt
+*.passphrase
+
+# ─── Live profile and on-stick engine ────────────────────────────────
 data/
 .uv-tools/
 .uv-cache/
 uv
 uv.exe
+gocryptfs
+gocryptfs.exe
 
-# OS noise
+# ─── OS noise ─────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
