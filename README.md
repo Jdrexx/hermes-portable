@@ -27,12 +27,12 @@ git clone https://github.com/Jdrexx/hermes-portable /path/to/usb && cd /path/to/
 
 To carry your full Hermes identity, add these files next to `bootstrap.sh` (all gitignored):
 
-| File | Purpose | How to create |
-|------|---------|---------------|
-| `.env` | API keys | `cp .env.example .env`, fill in |
-| `hermes-default.tar.gz` | Profile (config, skills, memories, cron) | `hermes profile export default -o hermes-default.tar.gz` |
-| `auth.json` | OAuth tokens | Copy from `~/.hermes/auth.json` |
-| `state.db` (+ `-wal`/`-shm`) | Session history (optional) | Copy from `~/.hermes/` |
+| File                         | Purpose                                  | How to create                                            |
+| ---------------------------- | ---------------------------------------- | -------------------------------------------------------- |
+| `.env`                       | API keys                                 | `cp .env.example .env`, fill in                          |
+| `hermes-default.tar.gz`      | Profile (config, skills, memories, cron) | `hermes profile export default -o hermes-default.tar.gz` |
+| `auth.json`                  | OAuth tokens                             | Copy from `~/.hermes/auth.json`                          |
+| `state.db` (+ `-wal`/`-shm`) | Session history (optional)               | Copy from `~/.hermes/`                                   |
 
 Without them, bootstrap starts a fresh profile.
 

@@ -7,7 +7,7 @@ transparent encryption so a lost stick is a non-event.
 
 We use [gocryptfs](https://github.com/rfjakob/gocryptfs): a well-audited,
 single-binary encrypted overlay filesystem. Your files live encrypted at rest
-in `hermes-portable.vault/`; unlocking mounts a decrypted *view* you use like a
+in `hermes-portable.vault/`; unlocking mounts a decrypted _view_ you use like a
 normal folder. Nothing plaintext is ever written to the host machine's disk.
 
 ## One-time setup
@@ -45,7 +45,7 @@ bash close-hermes-vault.sh         # lock it, then unplug
 
 ## Why the mountpoint is in your home directory
 
-FUSE cannot mount a decrypted view *onto a folder inside* a FAT/exFAT stick —
+FUSE cannot mount a decrypted view _onto a folder inside_ a FAT/exFAT stick —
 it fails with `fusermount: mount failed: Permission denied`. So the encrypted
 files stay on the stick and the decrypted window opens at
 `~/hermes-portable.open` on the host instead. This is by design and completely
